@@ -73,3 +73,4 @@ class SDCAWSPipelineArchitectureStack(Stack):
         # Git Version Tag If It Exists
         if os.getenv("GIT_TAG"):
             Tags.of(construct).add("Version", os.getenv("GIT_TAG"))
+
