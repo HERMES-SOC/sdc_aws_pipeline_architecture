@@ -16,3 +16,4 @@ class SDCAWSPipelineArchitectureStack(Stack):
             )
 
             logging.info(f"Created the {s3_bucket} S3 Bucket")
+
