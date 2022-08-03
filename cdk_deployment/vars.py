@@ -8,7 +8,7 @@ SPANI_BUCKET_NAME = "hermes-spani"
 NEMISIS_BUCKET_NAME = "hermes-nemisis"
 EEA_BUCKET_NAME = "hermes-eea"
 MERIT_BUCKET_NAME = "hermes-merit"
-SORTING_LAMBDA_BUCKET_NAME = "sdc_aws_sorting_lambda"
+SORTING_LAMBDA_BUCKET_NAME = "swsoc-sorting-lambda"
 
 # List of Buckets to be Created
 BUCKET_LIST = [
