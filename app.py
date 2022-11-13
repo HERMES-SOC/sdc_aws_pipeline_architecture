@@ -12,6 +12,7 @@ from cdk_deployment.vars import DEPLOYMENT_REGION
 
 app = cdk.App()
 
+print("test")
 
 # Initialize Deployment Stack
 SDCAWSPipelineArchitectureStack(
