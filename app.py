@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import yaml
+import logging
 import aws_cdk as cdk
 from cdk_deployment.sdc_aws_pipeline_architecture import SDCAWSPipelineArchitectureStack
 from cdk_deployment.sdc_aws_processing_lambda import SDCAWSProcessingLambdaStack
@@ -9,11 +10,13 @@ from cdk_deployment.sdc_aws_sorting_lambda import SDCAWSSortingLambdaStack
 # Initialize constants to be parsed from config.yaml
 config = {}
 
+logging.basicConfig(level=logging.INFO)
+
 # Read YAML file and parse variables
 try:
     with open("./config.yaml", "r") as f:
         loaded_config = yaml.safe_load(f)
-        print("config.yaml loaded successfully")
+        logging.info("config.yaml loaded successfully")
 
         bucket_list = []
         public_ecr_repo_list = []
@@ -38,7 +41,9 @@ try:
         config["ECR_PRIVATE_REPO_LIST"] = private_ecr_repo_list
 
 except FileNotFoundError:
-    print("config.yaml not found. Check to make sure it exists in the root directory.")
+    logging.error(
+        "config.yaml not found. Check to make sure it exists in the root directory."
+    )
     exit(1)
 
 
