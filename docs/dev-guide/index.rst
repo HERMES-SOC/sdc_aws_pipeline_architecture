@@ -8,13 +8,9 @@ If you are planning on contributing to this repository please read the following
 This guide borrows heavily from those developed by the SunPy Project and is generally consistent with this community-developed approach.
 
 
-.. .. toctree::
-..    :maxdepth: 6
-..    :caption: Contents:
-   
-..    dev_env
-..    maintainer_workflow
-..    coding_standards
-..    docs
-..    tests
+.. toctree::
+   :maxdepth: 6
+   :caption: Contents:
+    
+    cdk-overview
    
