@@ -16,6 +16,9 @@ This repository is what deploys all the cloud resources required for the SDC AWS
 - **SDCAWSSortingLambdaStack** - a stack that deploys the SDC Sorting Lambda Function (as a zip deployment based off the sdc_aws_sorting_lambda repo).
 - **SDCAWSProcessingLambdaStack** - a stack that deploys the SDC Processing Lambda Function (as a container image deployment based off the sdc_aws_processing_lambda repo). 
 
+Link to the `GitHub repository <https://github.com/HERMES-SOC/sdc_aws_pipeline_architecture>`_.
+
+
 .. Note:: 
     
     The **SDCAWSSortingLambdaStack** and **SDCAWSProcessingLambdaStack** CDK stacks are dependent on the **SDCAWSPipelineArchitectureStack** CDK stack. 
@@ -43,12 +46,33 @@ Link to the `Repository Documentation <https://sdc-aws-base-docker-image.readthe
 SDC AWS Sorting Lambda
 ----------------------
 
-This repo contains the source code for the SDC Sorting Lambda Function that. This is the function that is triggered whenever a new file is uploaded to the incoming S3 Bucket. The function is responsible for sorting the file into the correct directory structure and then triggering the SDC Processing Lambda Function.
+This repo contains the source code for the SDC Sorting Lambda Function. This is the function that is triggered whenever a new file is uploaded into the Incoming S3 Bucket that is deployed by the pipeline stack (**SDCAWSPipelineArchitectureStack**). This function copies the file into the correct instrument bucket (if it is a valid instrument file) which causes the SDC Processing Lambda Function to be triggered on that instrument bucket. If it is not a valid file it then skips the file and moves onto the next file to check and sort. The incoming bucket in this case becomes a duplicate of the folder that is being synced from the SDC external server, which serves as a backup of the files. Bucket versioning has been enabled as well just in case duplicates are uploaded into the bucket (Which should not be the case but it's a good failsafe). Also this Lambda function logs the file name and the time it was uploaded into the incoming bucket into a Timestream database and has a set cron schedule of every 12 hours to check for any files that were not sorted for whatever reason.
+
+The zip deployment of this function is zipped up and uploaded to the Sorting Lambda S3 Bucket deployed by the pipeline stack (**SDCAWSPipelineArchitectureStack**) via CI/CD. This is then deployed as a Lambda Function by the **SDCAWSSortingLambdaStack** CDK stack after all of it's CI/CD tests have been passed. For CI/CD there is currently a GitHub Actions workflow that runs on Pull Requests and then when pushed to main triggers an AWS CodeBuild workflow to test, build and push the zip deployment to the Sorting Lambda S3 Bucket.
+
+Link to the `GitHub repository <https://github.com/HERMES-SOC/sdc_aws_sorting_lambda>`_.
+
+**Documentation for this Repo Under Construction** 
+
+.. Note::
+
+    It is possible to zip the image locally and then manually push the zip file into the sorting lambda bucket, then deploy using the **SDCAWSSortingLambdaStack** within this repo. However, make sure you have deployed the **SDCAWSPipelineArchitectureStack** CDK Stack first as this stack includes the creation of the sorting bucket. Also since the **SDCAWSSortingLambdaStack** is triggered by CI/CD, you must specify the name of the zip file to be deployed as the environment variable `ZIP_NAME`.
 
 .. _sdc_aws_processing_lambda:
 
 SDC AWS Processing Lambda
 -------------------------
 
+This repo contains the source code for the SDC Processing Lambda Function. This is the function that is triggered whenever a new file is uploaded into an instrument bucket that is deployed by the pipeline stack (**SDCAWSPipelineArchitectureStack**). This function then processes the file to the next valid data level (dependent on **VALID_DATA_LEVELS** variable defined in the config.yaml of this repo) and adds the new processed data into the correct directory structure within the instrument bucket. If the calibration file does not exist it then terminates processing that file. This function is also set to run every 12 hours to check for any files that were not processed, this is so that if a new calibration file is made available it will then process any files that were not processed before. This function also logs the file name and the time it was uploaded into the instrument bucket into a Timestream database.
+
+The container image deployment of this function is built and pushed to the Processing Lambda ECR Repo deployed by the pipeline stack (**SDCAWSPipelineArchitectureStack**) via CI/CD. This is then deployed as a Lambda Function by the **SDCAWSProcessingLambdaStack** CDK stack after all of it's CI/CD tests have been passed. For CI/CD there is currently a GitHub Actions workflow that runs on Pull Requests and then when pushed to main triggers an AWS CodeBuild workflow to test, build and push the container image to the Processing Lambda ECR Repo.
+
+Link to the `GitHub repository <https://github.com/HERMES-SOC/sdc_aws_processing_lambda>`_.
+
+**Documentation for this Repo Under Construction**
+
+.. Note::
+
+    It is possible to build the image locally and then manually push the image to the Processing Lambda ECR Repo, then deploy using the **SDCAWSProcessingLambdaStack** within this repo. However, make sure you have deployed the **SDCAWSPipelineArchitectureStack** CDK Stack first as this stack includes the creation of the processing ECR Repo.
 
 
