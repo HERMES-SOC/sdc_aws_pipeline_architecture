@@ -16,6 +16,9 @@ The documentation is written in reStructuredText and built using Sphinx.
    :maxdepth: 6
    :caption: Contents:
    
-   repo-guide
-   dev-guide/index
    user-guide/index
+   repo-guide
+   pipeline-diagrams
+   dev-guide/index
+
+
