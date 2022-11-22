@@ -9,7 +9,7 @@ Welcome to our User Guide. This guide will help you to get started with download
 Prerequisites
 -------------
 * An AWS account
-* AWS Cli installed and configured
+* AWS CLI installed and configured
 * AWS Cloud Development Kit (CDK) 2.0 installed on your machine
 * Python 3.7 or higher
 * Node.js 10.3.0 or higher
