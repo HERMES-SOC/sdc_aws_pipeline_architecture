@@ -12,11 +12,11 @@ SDC AWS Pipeline Architecture
 -----------------------------
 This repository is what deploys all the cloud resources required for the SDC AWS Pipeline. It makes use of AWS Cloud Development Kit (CDK) to deploy the resources. The repo includes three different CDK stacks (located within the `cdk_deployment` folder) of cloud resources that to AWS:
 
-- **SDCAWSPipelineArchitectureStack** - a stack that deploys the underlying infrastructure (S3 Buckets, ECR repositories, Timestream Databases, etc).
-- **SDCAWSSortingLambdaStack** - a stack that deploys the SDC Sorting Lambda Function (as a zip deployment based off the sdc_aws_sorting_lambda repo).
-- **SDCAWSProcessingLambdaStack** - a stack that deploys the SDC Processing Lambda Function (as a container image deployment based off the sdc_aws_processing_lambda repo). 
+- **SDCAWSPipelineArchitectureStack** : a stack that deploys the underlying infrastructure (S3 Buckets, ECR repositories, Timestream Databases, etc).
+- **SDCAWSSortingLambdaStack** : a stack that deploys the SDC Sorting Lambda Function (as a zip deployment based off the sdc_aws_sorting_lambda repo).
+- **SDCAWSProcessingLambdaStack** : a stack that deploys the SDC Processing Lambda Function (as a container image deployment based off the sdc_aws_processing_lambda repo).
 
-Link to the `GitHub repository <https://github.com/HERMES-SOC/sdc_aws_pipeline_architecture>`_.
+Link to the `GitHub repository for Pipeline <https://github.com/HERMES-SOC/sdc_aws_pipeline_architecture>`_.
 
 
 .. Note:: 
@@ -33,7 +33,7 @@ This repo contains a dockerfile and Python requirements file that is used to bui
 
 The image is built, tested and pushed to the public ECR repository automatically through a CI/CD Pipeline allowing anyone to make changes to the base image. This repository is currently configured to run tests and linting workflows with `GitHub Actions <https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions>`_ on Pull Requests. Once the Pull Request is approved and merged into main it then triggers an AWS CodeBuild workflow to test, build and push the image to the Public ECR repository.
 
-Link to the `GitHub repository <https://github.com/HERMES-SOC/sdc_aws_base_docker_image>`_.
+Link to the `GitHub repository for Base Docker Image <https://github.com/HERMES-SOC/sdc_aws_base_docker_image>`_.
 
 Link to the `Repository Documentation <https://sdc-aws-base-docker-image.readthedocs.io/en/main/>`_.
 
@@ -50,7 +50,7 @@ This repo contains the source code for the SDC Sorting Lambda Function. This is 
 
 The zip deployment of this function is zipped up and uploaded to the Sorting Lambda S3 Bucket deployed by the pipeline stack (**SDCAWSPipelineArchitectureStack**) via CI/CD. This is then deployed as a Lambda Function by the **SDCAWSSortingLambdaStack** CDK stack after all of it's CI/CD tests have been passed. For CI/CD there is currently a GitHub Actions workflow that runs on Pull Requests and then when pushed to main triggers an AWS CodeBuild workflow to test, build and push the zip deployment to the Sorting Lambda S3 Bucket.
 
-Link to the `GitHub repository <https://github.com/HERMES-SOC/sdc_aws_sorting_lambda>`_.
+Link to the `GitHub repository for Sorting Function <https://github.com/HERMES-SOC/sdc_aws_sorting_lambda>`_.
 
 **Documentation for this Repo Under Construction** 
 
@@ -67,7 +67,7 @@ This repo contains the source code for the SDC Processing Lambda Function. This 
 
 The container image deployment of this function is built and pushed to the Processing Lambda ECR Repo deployed by the pipeline stack (**SDCAWSPipelineArchitectureStack**) via CI/CD. This is then deployed as a Lambda Function by the **SDCAWSProcessingLambdaStack** CDK stack after all of it's CI/CD tests have been passed. For CI/CD there is currently a GitHub Actions workflow that runs on Pull Requests and then when pushed to main triggers an AWS CodeBuild workflow to test, build and push the container image to the Processing Lambda ECR Repo.
 
-Link to the `GitHub repository <https://github.com/HERMES-SOC/sdc_aws_processing_lambda>`_.
+Link to the `GitHub repository for Processing Function <https://github.com/HERMES-SOC/sdc_aws_processing_lambda>`_.
 
 **Documentation for this Repo Under Construction**
 

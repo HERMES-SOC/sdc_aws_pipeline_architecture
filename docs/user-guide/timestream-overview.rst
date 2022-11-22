@@ -11,12 +11,18 @@ AWS Timestream is a fast, scalable, fully managed time series database service t
 What we log to Timestream
 --------------------------
 In the pipeline we use Timestream to log the following information:
-- file_key - the key of the file that is moved throughout S3
-- source_bucket - the bucket that the file was moved from
-- destination_bucket - the bucket that the file was moved to
-- action_type - the action that was performed on the file (PUT/DELETE)
-- measure_name - the name of the measure for that record (Defaulted to timestamp for Grafana ingestion)
-- measure_value - the value of the measure for that record (Defaulted to timestamp for Grafana ingestion)
+
+- **file_key** : the key of the file that is moved throughout S3
+
+- **source_bucket** : the bucket that the file was moved from
+
+- **destination_bucket** : the bucket that the file was moved to
+
+- **action_type** : the action that was performed on the file (PUT/DELETE)
+
+- **measure_name** : the name of the measure for that record (Defaulted to timestamp for Grafana ingestion)
+
+- **measure_value** : the value of the measure for that record (Defaulted to timestamp for Grafana ingestion)
 
 How we use Timestream
 ---------------------
