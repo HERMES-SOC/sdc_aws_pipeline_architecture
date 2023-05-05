@@ -44,7 +44,10 @@ class SDCAWSProcessingLambdaStack(Stack):
         database_name = f"{'' if self.is_production else 'dev_'}hermes_db"
 
         # Create RDS Database
-        db_instance = self._create_rds_database(rds_credentials_secret, database_name)
+        if not os.getenv("DRY_RUN"):
+            db_instance = self._create_rds_database(
+                rds_credentials_secret, database_name
+            )
 
         # Create Container Image ECR Function
         processing_function_name = (
@@ -62,9 +65,17 @@ class SDCAWSProcessingLambdaStack(Stack):
             code=aws_lambda.DockerImageCode.from_ecr(ecr_repository, tag_or_digest=TAG),
             environment={
                 "LAMBDA_ENVIRONMENT": config["DEPLOYMENT_ENVIRONMENT"],
-                "RDS_SECRET_ARN": rds_credentials_secret.secret_arn,
-                "RDS_HOST": db_instance.db_instance_endpoint_address,
-                "RDS_PORT": str(db_instance.db_instance_endpoint_port),
+                "RDS_SECRET_ARN": rds_credentials_secret.secret_arn
+                if not os.getenv("DRY_RUN")
+                else "",
+                "RDS_HOST": db_instance.db_instance_endpoint_address
+                if not os.getenv("DRY_RUN")
+                else "",
+                "RDS_PORT": str(
+                    db_instance.db_instance_endpoint_port
+                    if not os.getenv("DRY_RUN")
+                    else ""
+                ),
                 "RDS_DATABASE": database_name,
             },
         )
@@ -93,7 +104,9 @@ class SDCAWSProcessingLambdaStack(Stack):
                     "rds-data:ExecuteStatement",
                     "rds-data:BatchExecuteStatement",
                 ],
-                resources=[db_instance.instance_arn],
+                resources=[
+                    db_instance.instance_arn if not os.getenv("DRY_RUN") else "*"
+                ],
             )
         )
 
@@ -145,28 +158,8 @@ class SDCAWSProcessingLambdaStack(Stack):
         return rds_credentials_secret
 
     def _create_rds_database(self, rds_credentials_secret, database_name):
-        if os.getenv("DRY_RUN"):
-            vpc = aws_ec2.Vpc(
-                self,
-                "NewVPC",
-                cidr="10.0.0.0/16",
-                max_azs=2,
-                nat_gateways=1,
-                subnet_configuration=[
-                    aws_ec2.SubnetConfiguration(
-                        subnet_type=aws_ec2.SubnetType.PUBLIC,
-                        name="Public",
-                        cidr_mask=24
-                    ),
-                    aws_ec2.SubnetConfiguration(
-                        subnet_type=aws_ec2.SubnetType.PRIVATE,
-                        name="Private",
-                        cidr_mask=24
-                    )
-                ]
-            )
-        else:
-            vpc = aws_ec2.Vpc.from_lookup(self, "DefaultVPC", is_default=True)
+        # If environmental variable DRY_RUN create a new vpc, if not use from default
+        vpc = aws_ec2.Vpc.from_lookup(self, "DefaultVPC", is_default=True)
 
         db_instance = aws_rds.DatabaseInstance(
             self,
