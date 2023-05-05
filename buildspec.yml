@@ -3,6 +3,13 @@ version: 0.2
 phases:
   pre_build:
     commands:
+      - |
+        if git describe --tags --exact-match > /dev/null 2>&1; then
+          echo "This is a tag push event"
+        else
+          echo "This is not a tag push event, setting PREFIX to 'Dev'"
+          PREFIX="Dev"
+        fi
       - echo Install dev dependencies
       - pip3 install -r requirements.txt
       - npm install -g aws-cdk
@@ -30,17 +37,17 @@ phases:
       - |
         if [[ -z "${LAMBDA_PIPELINE}" ]];then
           echo Deploying Pipeline Architecture...
-          cdk deploy SDCAWSPipelineArchitectureStack -y --require-approval never
+          cdk deploy "${PREFIX}SDCAWSPipelineArchitectureStack" -y --require-approval never
           echo Start other Codebuilds
           aws codebuild start-build --project-name build_sdc_aws_base_docker_image --region us-east-2
           aws codebuild start-build --project-name build_sdc_aws_sorting_lambda --region us-east-2
         else
           if [[ $LAMBDA_PIPELINE == *"SORTING"* ]];then
             echo Deploying Sorting Lambda
-            cdk deploy SDCAWSSortingLambdaStack -y --require-approval never
+            cdk deploy "${PREFIX}SDCAWSSortingLambdaStack" -y --require-approval never
           else
             echo Deploying Processing Lambda
-            cdk deploy SDCAWSProcessingLambdaStack -y --require-approval never
+            cdk deploy "${PREFIX}SDCAWSProcessingLambdaStack" -y --require-approval never
           fi    
         fi   
    
