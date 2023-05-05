@@ -1,5 +1,6 @@
 aws-cdk-lib==2.74.0
 constructs==10.1.313
+boto3==1.26.127
 flake8==6.0.0
 black==23.3.0
 sphinx==6.1.3
