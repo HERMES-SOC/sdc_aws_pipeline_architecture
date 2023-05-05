@@ -130,7 +130,7 @@ class SDCAWSProcessingLambdaStack(Stack):
                 f"aws_sdc_{bucket}_data_level_sns_topic",
                 (
                     f"arn:aws:sns:{config['DEPLOYMENT_REGION']}:"
-                    f"{self.account}:{bucket}-sns-topic",
+                    f"{self.account}:{bucket}-sns-topic"
                 ),
             )
 
