@@ -115,7 +115,10 @@ class SDCAWSProcessingLambdaStack(Stack):
             sns_topic = aws_sns.Topic.from_topic_arn(
                 self,
                 f"aws_sdc_{bucket}_data_level_sns_topic",
-                f"arn:aws:sns:{config['DEPLOYMENT_REGION']}:{self.account}:{bucket}-sns-topic",
+                (
+                    f"arn:aws:sns:{config['DEPLOYMENT_REGION']}:"
+                    f"{self.account}:{bucket}-sns-topic",
+                ),
             )
 
             # Add Lambda as a subscriber to the SNS Topic
