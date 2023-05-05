@@ -145,7 +145,28 @@ class SDCAWSProcessingLambdaStack(Stack):
         return rds_credentials_secret
 
     def _create_rds_database(self, rds_credentials_secret, database_name):
-        vpc = aws_ec2.Vpc.from_lookup(self, "DefaultVPC", is_default=True)
+        if os.getenv("DRY_RUN"):
+            vpc = aws_ec2.Vpc(
+                self,
+                "NewVPC",
+                cidr="10.0.0.0/16",
+                max_azs=2,
+                nat_gateways=1,
+                subnet_configuration=[
+                    aws_ec2.SubnetConfiguration(
+                        subnet_type=aws_ec2.SubnetType.PUBLIC,
+                        name="Public",
+                        cidr_mask=24
+                    ),
+                    aws_ec2.SubnetConfiguration(
+                        subnet_type=aws_ec2.SubnetType.PRIVATE,
+                        name="Private",
+                        cidr_mask=24
+                    )
+                ]
+            )
+        else:
+            vpc = aws_ec2.Vpc.from_lookup(self, "DefaultVPC", is_default=True)
 
         db_instance = aws_rds.DatabaseInstance(
             self,
