@@ -132,7 +132,8 @@ class SDCAWSPipelineArchitectureStack(Stack):
 
                 sns_topic.add_subscription(sub)
 
-                # Add a policy statement to the queue to allow the SNS topic to send messages
+                # Add a policy statement to the queue
+                # to allow the SNS topic to send messages
                 sqs_queue.add_to_resource_policy(
                     aws_iam.PolicyStatement(
                         actions=["sqs:SendMessage", "sqs:ReceiveMessage"],
