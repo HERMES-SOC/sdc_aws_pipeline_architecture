@@ -132,6 +132,7 @@ class SDCAWSPipelineArchitectureStack(Stack):
 
                 sns_topic.add_subscription(sub)
 
+                # Add a policy statement to the queue to allow the SNS topic to send messages
                 sqs_queue.add_to_resource_policy(
                     aws_iam.PolicyStatement(
                         actions=["sqs:SendMessage", "sqs:ReceiveMessage"],
@@ -144,7 +145,27 @@ class SDCAWSPipelineArchitectureStack(Stack):
                     )
                 )
 
+                # Add a policy to the queue to allow the S3 bucket to send messages
+                sqs_queue.add_to_resource_policy(
+                    aws_iam.PolicyStatement(
+                        actions=["sqs:SendMessage", "sqs:ReceiveMessage"],
+                        effect=aws_iam.Effect.ALLOW,
+                        principals=[aws_iam.ArnPrincipal("*")],
+                        resources=[sqs_queue.queue_arn],
+                        conditions={
+                            "ArnEquals": {"aws:SourceArn": s3_bucket.bucket_arn}
+                        },
+                    )
+                )
+
                 for level in config["VALID_DATA_LEVELS"]:
+                    # If last level
+                    if level == config["VALID_DATA_LEVELS"][-1]:
+                        # Go directly to the SQS queue
+                        bucket_notification = aws_s3_notifications.SqsDestination(
+                            sqs_queue
+                        )
+
                     # Create a filter for the SNS topic
                     s3_filter = aws_s3.NotificationKeyFilter(prefix=f"{level}/")
 
