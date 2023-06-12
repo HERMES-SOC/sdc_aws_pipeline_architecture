@@ -97,16 +97,26 @@ class SDCAWSPipelineArchitectureStack(Stack):
             if bucket == config["S3_SERVER_ACCESS_LOGS_BUCKET_NAME"]:
                 continue
 
-            s3_bucket = aws_s3.Bucket(
-                self,
-                f"aws_sdc_{bucket}_bucket",
-                bucket_name=bucket,
-                removal_policy=RemovalPolicy.RETAIN,
-                auto_delete_objects=False,
-                server_access_logs_bucket=s3_server_access_bucket,
-                server_access_logs_prefix=f"{bucket}/",
-                versioned=True,
-            )
+            if self.is_production:
+                s3_bucket = aws_s3.Bucket(
+                    self,
+                    f"aws_sdc_{bucket}_bucket",
+                    bucket_name=bucket,
+                    removal_policy=RemovalPolicy.RETAIN,
+                    auto_delete_objects=False,
+                    server_access_logs_bucket=s3_server_access_bucket,
+                    server_access_logs_prefix=f"{bucket}/",
+                    versioned=True,
+                )
+            else:
+                s3_bucket = aws_s3.Bucket(
+                    self,
+                    f"aws_sdc_{bucket}_bucket",
+                    bucket_name=bucket,
+                    removal_policy=RemovalPolicy.RETAIN,
+                    auto_delete_objects=False,
+                    versioned=True,
+                )
 
             if config["MISSION_NAME"] in bucket:
                 topic_name = f"{bucket}-sns-topic"
