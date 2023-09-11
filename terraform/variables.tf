@@ -70,6 +70,11 @@ variable "image_tag" {
   default     = "latest"
 }
 
+variable "s3_key" {
+  type = string
+  description = "S3 key for the sorting lambda"
+}
+
 variable "valid_data_levels" {
   type        = list(string)
   description = "The list of valid data levels"

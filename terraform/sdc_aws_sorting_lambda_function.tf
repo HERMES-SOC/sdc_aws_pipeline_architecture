@@ -5,15 +5,6 @@
 // S3 Sorting Lambda Function
 ///////////////////////////////////////
 
-// Get the latest version of the lambda function
-data "aws_s3_bucket" "lambda_bucket" {
-  bucket = "${local.environment_short_name}${var.sorting_lambda_bucket_name}"
-}
-
-data "aws_s3_objects" "lambda_objects" {
-  bucket = data.aws_s3_bucket.lambda_bucket.bucket
-}
-
 // Creates the Sorting Lambda function
 resource "aws_lambda_function" "sorting_lambda_function" {
   function_name = local.is_production ? "aws_sdc_sorting_lambda_function" : "dev_aws_sdc_sorting_lambda_function"
@@ -31,8 +22,7 @@ resource "aws_lambda_function" "sorting_lambda_function" {
   }
 
   s3_bucket = "${local.environment_short_name}${var.sorting_lambda_bucket_name}"
-  s3_key    = sort(data.aws_s3_objects.lambda_objects.keys)[length(data.aws_s3_objects.lambda_objects.keys) - 1]
-
+  s3_key    = var.s3_key
   ephemeral_storage {
     size = 512
   }
