@@ -47,9 +47,10 @@ phases:
 
       # Fetch latest image and SF image tag
       - |
-        PF_IMAGE_TAG=$(aws ecr describe-images --repository-name $PF_ECR_REPO --region us-east-1 --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[]" --output text | grep -v latest | head -n 1)
+        PF_IMAGE_TAG=$(aws-runas smce-swsoc aws ecr describe-images --repository-name $PF_ECR_REPO --region us-east-1 --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[]" --output text | awk '{for(i=1;i<=NF;i++) if($i!="latest") print $i; exit}')
         echo $PF_IMAGE_TAG
-        SF_IMAGE_TAG=$(aws ecr describe-images --repository-name $SF_ECR_REPO --region us-east-1 --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[]" --output text | grep -v latest | head -n 1)
+
+        SF_IMAGE_TAG=$(aws-runas smce-swsoc aws ecr describe-images --repository-name $SF_ECR_REPO --region us-east-1 --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[]" --output text | awk '{for(i=1;i<=NF;i++) if($i!="latest") print $i; exit}')
         echo $SF_IMAGE_TAG
 
 
