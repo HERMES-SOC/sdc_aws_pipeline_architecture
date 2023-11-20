@@ -29,17 +29,16 @@ INSTR_NAMES:
 # The names of the buckets that will be created for the mission
 INCOMING_BUCKET_NAME: swsoc-incoming
 
+# S3 Sorting Lambda Bucket Name
+# The name of the bucket that will be created to store the build artifacts for the sorting lambda
+SORTING_LAMBDA_BUCKET_NAME: swsoc-sorting-lambda
+
 # S3 Server Access Logs Bucket
 # The name of the bucket that will be created to store the s3 server access logs
 S3_SERVER_ACCESS_LOGS_BUCKET_NAME: swsoc-s3-server-access-logs
-
 # Processing Lambda ECR Repository Name
 # The name of the ECR repository that will be created to store the processing lambda image
 PROCESSING_LAMBDA_PRIVATE_ECR_NAME: sdc_aws_processing_lambda
-
-# S3 Sorting Lambda ECS Name
-# The name of the ECR repository  that will be created to store the build artifacts for the sorting lambda
-SORTING_LAMBDA_PRIVATE_ECR_NAME: swsoc-sorting-lambda
 
 # Docker Base ECR Repository Name
 # The name of the ECR repository that will be created to store the docker base image
